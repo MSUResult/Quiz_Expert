@@ -12,7 +12,7 @@ export default function LayoutWrapper({
   const pathname = usePathname();
 
   // Routes where Navbar should NOT appear
-  const hiddenNavbarRoutes = ["/admin", "/login", "/signup"];
+  const hiddenNavbarRoutes = ["/admin", "/login", "/Signup"];
   const shouldHideNavbar = hiddenNavbarRoutes.some((route) =>
     pathname.startsWith(route)
   );
