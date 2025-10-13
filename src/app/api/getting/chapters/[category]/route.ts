@@ -2,8 +2,13 @@ import dbConnect from "@/lib/db";
 import Chapter from "@/models/chapters";
 import { NextResponse } from "next/server";
 
-export async function GET(request, { params }) {
-  const { category } = params;
+export const dynamic = "force-dynamic";
+
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ category: string }> } // 👈 params is a Promise in Next.js 15
+) {
+  const { category } = await context.params; // 👈 await it!
 
   if (!category) {
     return NextResponse.json(
@@ -15,8 +20,7 @@ export async function GET(request, { params }) {
   try {
     await dbConnect();
 
-    // Find all chapters matching the category and sort them by chapterNumber
-    const chapters = await Chapter.find({ category: category }).sort({
+    const chapters = await Chapter.find({ category }).sort({
       chapterNumber: 1,
     });
 

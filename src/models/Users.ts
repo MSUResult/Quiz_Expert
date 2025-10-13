@@ -18,21 +18,20 @@ const UserSchema = new Schema(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
-      unique: true,
       trim: true,
       lowercase: true,
       match: [
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill a valid email address",
       ],
+      // optional now, not required
     },
-    // ✅ NEW FIELD
     phoneNumber: {
       type: String,
+      required: [true, "Phone number is required"], // make it required
       unique: true,
       trim: true,
-      sparse: true, // Also sparse, for users signing up with email.
+      sparse: true,
     },
     password: {
       type: String,
@@ -50,57 +49,28 @@ const UserSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-
-    // 🧠 QUIZ-RELATED FIELDS - REVISED FOR CLARITY
     quizHistory: [
       {
-        // ID of the chapter the quiz was played for
         chapterId: {
           type: Schema.Types.ObjectId,
-          ref: "Chapter", // assumes you have a Chapter model
+          ref: "Chapter",
           required: true,
         },
-        // Score on that attempt (required)
-        score: {
-          type: Number,
-          required: true,
-        },
-        // Date of the attempt
-        date: {
-          type: Date,
-          default: Date.now,
-        },
+        score: { type: Number, required: true },
+        date: { type: Date, default: Date.now },
       },
     ],
-
-    // Aggregate fields (update these when saving a new score)
-    totalScore: {
-      type: Number,
-      default: 0,
-    },
-    quizzesPlayed: {
-      type: Number,
-      default: 0,
-    },
-    bestScore: {
-      type: Number,
-      default: 0,
-    },
-    lastPlayed: {
-      type: Date,
-    },
-
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+    totalScore: { type: Number, default: 0 },
+    quizzesPlayed: { type: Number, default: 0 },
+    bestScore: { type: Number, default: 0 },
+    lastPlayed: { type: Date },
+    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
 
-// Ensure unique email index
-UserSchema.index({ email: 1 }, { unique: true });
+// Remove duplicate email index warning: keep only unique in field
+// UserSchema.index({ email: 1 }, { unique: true }); // removed
 
-// If already compiled (hot reload), reuse it
 const User = models.User || mongoose.model("User", UserSchema);
 export default User;
