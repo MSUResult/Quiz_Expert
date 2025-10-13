@@ -1,0 +1,372 @@
+[
+  {
+    "title": "Chapter 1: Number System",
+    "chapterNumber": 1,
+    "description": "Understand integers, fractions, decimals, percentages, and basic properties of numbers.",
+    "category": "Math",
+    "timeEstimate": 20,
+    "questions": [
+      {
+        "questionText": "What is the least common multiple of 12 and 18?",
+        "options": ["36", "54", "72", "24"],
+        "correctAnswer": "36",
+        "explanation": "LCM of 12 and 18 is 36 because 36 is the smallest number divisible by both."
+      },
+      {
+        "questionText": "Which number is a prime number?",
+        "options": ["21", "29", "35", "39"],
+        "correctAnswer": "29",
+        "explanation": "29 is divisible only by 1 and itself."
+      },
+      {
+        "questionText": "If 3/4 of a number is 18, what is the number?",
+        "options": ["24", "20", "22", "21"],
+        "correctAnswer": "24",
+        "explanation": "Number = 18 ÷ (3/4) = 18 × 4/3 = 24."
+      },
+      {
+        "questionText": "The sum of first 10 natural numbers is?",
+        "options": ["55", "45", "60", "50"],
+        "correctAnswer": "55",
+        "explanation": "Sum = n(n+1)/2 = 10×11/2 = 55."
+      },
+      {
+        "questionText": "What is 25% of 200?",
+        "options": ["50", "40", "45", "55"],
+        "correctAnswer": "50",
+        "explanation": "25% of 200 = 200 × 25/100 = 50."
+      },
+      {
+        "questionText": "Which of the following is a perfect square?",
+        "options": ["50", "64", "72", "81.5"],
+        "correctAnswer": "64",
+        "explanation": "64 = 8², so it is a perfect square."
+      },
+      {
+        "questionText": "The difference between 3/5 and 2/7 is?",
+        "options": ["11/35", "1/35", "17/35", "5/12"],
+        "correctAnswer": "11/35",
+        "explanation": "3/5 - 2/7 = (21-10)/35 = 11/35."
+      },
+      {
+        "questionText": "If a number is divisible by both 4 and 6, it must be divisible by?",
+        "options": ["12", "10", "14", "8"],
+        "correctAnswer": "12",
+        "explanation": "LCM of 4 and 6 is 12, so number divisible by both must be divisible by 12."
+      },
+      {
+        "questionText": "What is the square root of 144?",
+        "options": ["11", "12", "14", "10"],
+        "correctAnswer": "12",
+        "explanation": "12 × 12 = 144."
+      },
+      {
+        "questionText": "The sum of first 20 even numbers is?",
+        "options": ["420", "400", "440", "460"],
+        "correctAnswer": "420",
+        "explanation": "Sum = n(n+1) = 20×21 = 420."
+      }
+    ]
+  },
+  {
+    "title": "Chapter 2: Algebra",
+    "chapterNumber": 2,
+    "description": "Learn basic algebraic expressions, equations, inequalities, and their applications.",
+    "category": "Math",
+    "timeEstimate": 25,
+    "questions": [
+      {
+        "questionText": "Solve for x: 2x + 5 = 15",
+        "options": ["4", "5", "6", "7"],
+        "correctAnswer": "5",
+        "explanation": "2x = 10, so x = 5."
+      },
+      {
+        "questionText": "If x² = 49, then x = ?",
+        "options": ["7", "-7", "Both 7 and -7", "None"],
+        "correctAnswer": "Both 7 and -7",
+        "explanation": "x² = 49 ⇒ x = ±7."
+      },
+      {
+        "questionText": "Simplify: 3(x+2) - 2(x-1)",
+        "options": ["x+8", "x+4", "5x+4", "x+2"],
+        "correctAnswer": "x+8",
+        "explanation": "3x+6-2x+2 = x+8."
+      },
+      {
+        "questionText": "If 5x = 20, find x.",
+        "options": ["2", "3", "4", "5"],
+        "correctAnswer": "4",
+        "explanation": "x = 20/5 = 4."
+      },
+      {
+        "questionText": "Factorize: x² - 9",
+        "options": [
+          "(x-3)(x+3)",
+          "(x-9)(x+1)",
+          "(x-1)(x+9)",
+          "Cannot be factorized"
+        ],
+        "correctAnswer": "(x-3)(x+3)",
+        "explanation": "x² - 9 = x² - 3² = (x-3)(x+3)."
+      },
+      {
+        "questionText": "Solve: 3x - 7 = 2x + 5",
+        "options": ["12", "10", "8", "7"],
+        "correctAnswer": "12",
+        "explanation": "3x-2x = 5+7 ⇒ x=12."
+      },
+      {
+        "questionText": "If x - y = 5 and x + y = 15, find x.",
+        "options": ["5", "10", "15", "20"],
+        "correctAnswer": "10",
+        "explanation": "x - y = 5, x + y = 15 ⇒ 2x = 20 ⇒ x = 10."
+      },
+      {
+        "questionText": "The value of (2x + 3y) when x=1 and y=2 is?",
+        "options": ["7", "8", "6", "9"],
+        "correctAnswer": "7",
+        "explanation": "2*1 + 3*2 = 2+6 = 8."
+      },
+      {
+        "questionText": "Solve for y: 4y + 3 = 19",
+        "options": ["3", "4", "5", "6"],
+        "correctAnswer": "4",
+        "explanation": "4y = 16 ⇒ y = 4."
+      },
+      {
+        "questionText": "If 2x + 3 = 11, then x = ?",
+        "options": ["4", "5", "6", "7"],
+        "correctAnswer": "4",
+        "explanation": "2x = 8 ⇒ x = 4."
+      }
+    ]
+  },
+  {
+    "title": "Chapter 3: Geometry",
+    "chapterNumber": 3,
+    "description": "Covers basic geometry: lines, angles, triangles, circles, and areas.",
+    "category": "Math",
+    "timeEstimate": 25,
+    "questions": [
+      {
+        "questionText": "Sum of angles in a triangle is?",
+        "options": ["180°", "90°", "360°", "270°"],
+        "correctAnswer": "180°",
+        "explanation": "Sum of angles in any triangle is 180°."
+      },
+      {
+        "questionText": "Area of a rectangle with length 5 and breadth 3 is?",
+        "options": ["15", "8", "10", "20"],
+        "correctAnswer": "15",
+        "explanation": "Area = length × breadth = 5 × 3 = 15."
+      },
+      {
+        "questionText": "A right angle measures?",
+        "options": ["90°", "45°", "180°", "60°"],
+        "correctAnswer": "90°",
+        "explanation": "By definition, a right angle = 90°."
+      },
+      {
+        "questionText": "The perimeter of a square with side 7 is?",
+        "options": ["28", "14", "21", "35"],
+        "correctAnswer": "28",
+        "explanation": "Perimeter = 4 × side = 4 × 7 = 28."
+      },
+      {
+        "questionText": "Radius of a circle is 7. Area = ? (use π=22/7)",
+        "options": ["154", "144", "132", "120"],
+        "correctAnswer": "154",
+        "explanation": "Area = πr² = 22/7 × 7 ×7 = 154."
+      },
+      {
+        "questionText": "Number of diagonals in a hexagon?",
+        "options": ["9", "6", "12", "8"],
+        "correctAnswer": "9",
+        "explanation": "Diagonals = n(n-3)/2 = 6×3/2 = 9."
+      },
+      {
+        "questionText": "Each exterior angle of a regular pentagon?",
+        "options": ["72°", "90°", "108°", "60°"],
+        "correctAnswer": "72°",
+        "explanation": "Exterior angle = 360/n = 360/5 = 72°."
+      },
+      {
+        "questionText": "If base=10 and height=5, area of triangle?",
+        "options": ["25", "30", "20", "15"],
+        "correctAnswer": "25",
+        "explanation": "Area = 1/2 × base × height = 1/2 × 10 ×5 = 25."
+      },
+      {
+        "questionText": "The sum of interior angles of a hexagon?",
+        "options": ["720°", "540°", "360°", "600°"],
+        "correctAnswer": "720°",
+        "explanation": "Sum = (n-2)×180 = (6-2)×180 = 720°."
+      },
+      {
+        "questionText": "If circumference of circle is 44, radius is? (π=22/7)",
+        "options": ["7", "14", "11", "10"],
+        "correctAnswer": "7",
+        "explanation": "C=2πr ⇒ 44=2×22/7×r ⇒ r=7."
+      }
+    ]
+  },
+  {
+    "title": "Chapter 4: Statistics & Data Interpretation",
+    "chapterNumber": 4,
+    "description": "Learn basic statistics, averages, ratios, percentages, and interpreting charts.",
+    "category": "Math",
+    "timeEstimate": 20,
+    "questions": [
+      {
+        "questionText": "Average of 5, 10, 15 is?",
+        "options": ["10", "11", "12", "9"],
+        "correctAnswer": "10",
+        "explanation": "Average = (5+10+15)/3 = 10."
+      },
+      {
+        "questionText": "If total students = 100, boys = 60, percentage of girls = ?",
+        "options": ["40%", "50%", "60%", "30%"],
+        "correctAnswer": "40%",
+        "explanation": "Girls = 100-60=40 ⇒ 40%."
+      },
+      {
+        "questionText": "Ratio of 20:50 simplified?",
+        "options": ["2:5", "5:2", "1:2", "4:5"],
+        "correctAnswer": "2:5",
+        "explanation": "Divide both by 10 ⇒ 20:50 = 2:5."
+      },
+      {
+        "questionText": "Mean of 2, 4, 6, 8, 10?",
+        "options": ["6", "5", "4", "7"],
+        "correctAnswer": "6",
+        "explanation": "Sum=30, n=5, mean=30/5=6."
+      },
+      {
+        "questionText": "Median of 3, 1, 5, 7, 9?",
+        "options": ["5", "3", "7", "1"],
+        "correctAnswer": "5",
+        "explanation": "Arrange: 1,3,5,7,9 ⇒ median = middle = 5."
+      },
+      {
+        "questionText": "If sales increase from 1000 to 1200, percent increase?",
+        "options": ["20%", "15%", "25%", "10%"],
+        "correctAnswer": "20%",
+        "explanation": "Increase = 200, %increase = 200/1000*100 = 20%."
+      },
+      {
+        "questionText": "Mode of 2, 4, 4, 6, 7?",
+        "options": ["4", "2", "6", "7"],
+        "correctAnswer": "4",
+        "explanation": "4 appears most frequently."
+      },
+      {
+        "questionText": "Range of 5, 7, 2, 9, 4?",
+        "options": ["7", "5", "6", "4"],
+        "correctAnswer": "7",
+        "explanation": "Range = max-min = 9-2 =7."
+      },
+      {
+        "questionText": "If ratio of A:B = 3:4 and total = 28, B = ?",
+        "options": ["16", "12", "10", "14"],
+        "correctAnswer": "16",
+        "explanation": "A+B=28 ⇒ 3x+4x=28 ⇒ 7x=28 ⇒ x=4 ⇒ B=4x=16."
+      },
+      {
+        "questionText": "Probability of getting head in a coin toss?",
+        "options": ["1/2", "1/4", "1/3", "1"],
+        "correctAnswer": "1/2",
+        "explanation": "Coin has 2 sides, probability=head = 1/2."
+      }
+    ]
+  },
+  {
+    "title": "Chapter 5: Arithmetic & Problem Solving",
+    "chapterNumber": 5,
+    "description": "Covers time, speed, distance, profit & loss, simple & compound interest.",
+    "category": "Math",
+    "timeEstimate": 25,
+    "questions": [
+      {
+        "questionText": "A train runs 60 km in 1.5 hours. Speed = ?",
+        "options": ["40 km/h", "45 km/h", "50 km/h", "35 km/h"],
+        "correctAnswer": "40 km/h",
+        "explanation": "Speed = distance/time = 60/1.5 = 40 km/h."
+      },
+      {
+        "questionText": "If cost price = 200 and profit = 20%, selling price = ?",
+        "options": ["240", "220", "260", "250"],
+        "correctAnswer": "240",
+        "explanation": "SP = CP × (1 + profit%) = 200×1.2 = 240."
+      },
+      {
+        "questionText": "Simple interest for 2 years at 5% on 1000?",
+        "options": ["100", "150", "200", "120"],
+        "correctAnswer": "100",
+        "explanation": "SI = P×R×T/100 = 1000×5×2/100 = 100."
+      },
+      {
+        "questionText": "If speed = 60 km/h, time to cover 180 km?",
+        "options": ["3 h", "2 h", "4 h", "5 h"],
+        "correctAnswer": "3 h",
+        "explanation": "Time = distance/speed = 180/60 =3 h."
+      },
+      {
+        "questionText": "A shopkeeper gives 10% discount on 500. Price paid?",
+        "options": ["450", "400", "475", "500"],
+        "correctAnswer": "450",
+        "explanation": "Discount = 500×10/100 =50 ⇒ Price = 500-50=450."
+      },
+      {
+        "questionText": "Compound interest for 1 year at 10% on 1000?",
+        "options": ["1100", "1000", "1010", "1200"],
+        "correctAnswer": "1100",
+        "explanation": "CI = 1000 × (1+0.1)^1 = 1100."
+      },
+      {
+        "questionText": "Time taken to fill a tank 60 L with rate 15 L/h?",
+        "options": ["4 h", "5 h", "3 h", "6 h"],
+        "correctAnswer": "4 h",
+        "explanation": "Time = 60/15 = 4 hours."
+      },
+      {
+        "questionText": "Profit if CP=500, SP=600?",
+        "options": ["100", "120", "90", "150"],
+        "correctAnswer": "100",
+        "explanation": "Profit = SP-CP = 600-500 = 100."
+      },
+      {
+        "questionText": "Discount % if CP=800, SP=720?",
+        "options": ["10%", "12%", "8%", "15%"],
+        "correctAnswer": "10%",
+        "explanation": "Discount = 800-720=80 ⇒ % = 80/800*100 = 10%."
+      },
+      {
+        "questionText": "If a boat moves 20 km downstream in 2 h, speed of boat in still water = ? (stream 2 km/h)",
+        "options": ["8 km/h", "10 km/h", "9 km/h", "12 km/h"],
+        "correctAnswer": "8 km/h",
+        "explanation": "Downstream speed = boat+stream= 10 km/h, boat speed = 10-2=8 km/h."
+      }
+    ]
+  },
+  {
+    "title": "Chapter 6: General Knowledge (GS)",
+    "chapterNumber": 6,
+    "description": "Single GK question for UPSC preparation.",
+    "category": "GS",
+    "timeEstimate": 5,
+    "questions": [
+      {
+        "questionText": "Who is the current President of India?",
+        "options": [
+          "Droupadi Murmu",
+          "Ram Nath Kovind",
+          "Pranab Mukherjee",
+          "Amit Shah"
+        ],
+        "correctAnswer": "Droupadi Murmu",
+        "explanation": "Droupadi Murmu became the 15th President of India in 2022."
+      }
+    ]
+  }
+]
