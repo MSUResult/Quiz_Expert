@@ -8,34 +8,54 @@ import {
   FaRedo,
 } from "react-icons/fa";
 
-// --- NO CHANGES to these functions ---
+// --- Fetch chapters with ABSOLUTE URL ---
 async function getVedicMathChapters() {
-  // ... your existing fetching logic
-  const apiUrl = `${
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000"
-  }/api/getting/chapters/Math`;
+  // ✅ FIX: Construct the full URL using the environment variable.
+  const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const apiUrl = `${domain}/api/getting/chapters/Math`;
+
+  // console.log(`[FRONTEND] Fetching chapters from URL: ${apiUrl}`);
 
   try {
     const res = await fetch(apiUrl, { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch chapters");
+    // console.log(`[FRONTEND] Received response with status: ${res.status}`);
+
+    if (!res.ok) {
+      console.error("[FRONTEND] Failed to fetch chapters. Status:", res.status);
+      // Log the response body to see the error from the API
+      const errorBody = await res.text();
+      console.error("[FRONTEND] Error response body:", errorBody);
+      return [];
+    }
+
     const data = await res.json();
-    return data.data;
+    // console.log("[FRONTEND] Successfully parsed JSON data:", data);
+    return data.data || [];
   } catch (error) {
-    console.error(error);
+    // This will now catch the Invalid URL error if it happens again.
+    // console.error("[FRONTEND] A critical error occurred during fetch:", error);
     return [];
   }
 }
 
-const getDifficultyTag = (chapterNumber) => {
-  // ... your existing difficulty logic
+// --- Difficulty tag helper ---
+const getDifficultyTag = (chapterNumber: number) => {
   if (chapterNumber <= 2) return { text: "Beginner", color: "bg-green-600" };
   if (chapterNumber <= 5)
     return { text: "Intermediate", color: "bg-orange-500" };
   return { text: "Advanced", color: "bg-red-600" };
 };
 
-const ActionButton = ({ isLocked, isCompleted, chapterId }) => {
-  // ... your existing ActionButton component
+// --- Action Button Component ---
+const ActionButton = ({
+  isLocked,
+  isCompleted,
+  chapterId,
+}: {
+  isLocked: boolean;
+  isCompleted: boolean;
+  chapterId: string;
+}) => {
   if (isLocked) {
     return (
       <button
@@ -64,25 +84,33 @@ const ActionButton = ({ isLocked, isCompleted, chapterId }) => {
   );
 };
 
-// --- MAIN COMPONENT WITH UI IMPROVEMENTS ---
+// --- MAIN COMPONENT ---
 export default async function LearningChapters() {
+  // console.log(
+  //   "[FRONTEND] LearningChapters component is rendering on the server."
+  // );
   const chapters = await getVedicMathChapters();
 
   if (!chapters || chapters.length === 0) {
+    // console.log("[FRONTEND] No chapters found, rendering fallback UI.");
     return (
       <div className="text-center py-20">
         <h2 className="text-2xl font-bold text-white">No Chapters Found</h2>
         <p className="text-gray-400 mt-2">
-          Could not load the learning materials. Please try again later.
+          Could not load the learning materials. Please check the server console
+          for errors.
         </p>
       </div>
     );
   }
 
+  // console.log(
+  //   `[FRONTEND] Rendering timeline with ${chapters.length} chapters.`
+  // );
   return (
     <div className="bg-[#0D1117] min-h-screen py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header section remains centered */}
+        {/* Header */}
         <div className="mx-auto max-w-3xl lg:mx-0 text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Learning Chapters
@@ -93,16 +121,13 @@ export default async function LearningChapters() {
           </p>
         </div>
 
-        {/* --- Main Timeline Container --- 
-              This is the new centered wrapper for the timeline */}
+        {/* Timeline Container */}
         <div className="relative mx-auto mt-20 max-w-5xl">
-          {/* The vertical line - now centered */}
           <div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-gray-700" />
-
           <div className="space-y-12 md:space-y-0">
-            {chapters.map((chapter, index) => {
-              const isLocked = index > 1;
-              const isCompleted = index < 1;
+            {chapters.map((chapter: any, index: number) => {
+              const isLocked = index > 1; // Example logic
+              const isCompleted = index < 1; // Example logic
               const tag = getDifficultyTag(chapter.chapterNumber);
 
               let statusIcon, statusColor;
@@ -117,7 +142,6 @@ export default async function LearningChapters() {
                 statusColor = "bg-purple-500 animate-pulse";
               }
 
-              // NEW: Determine if the card is on the left or right
               const isRightSide = index % 2 !== 0;
 
               return (
@@ -125,21 +149,16 @@ export default async function LearningChapters() {
                   key={chapter._id}
                   className="relative md:grid md:grid-cols-2 md:gap-x-16"
                 >
-                  {/* --- Status Icon on the timeline (always in the middle) --- */}
                   <div
                     className={`absolute left-1/2 top-4 -translate-x-1/2 flex items-center justify-center w-10 h-10 rounded-full border-4 border-[#0D1117] ${statusColor}`}
                   >
                     <span className="text-white text-lg">{statusIcon}</span>
                   </div>
-
-                  {/* Spacer for the side without the card on medium screens and up */}
                   <div
                     className={`hidden md:block ${
                       isRightSide ? "" : "col-start-2"
                     }`}
                   ></div>
-
-                  {/* --- Chapter Card Container --- */}
                   <div
                     className={`mb-12 md:mb-24 ${
                       isRightSide ? "col-start-2" : ""
@@ -152,8 +171,8 @@ export default async function LearningChapters() {
                           : "bg-gradient-to-br from-gray-900 to-gray-800/60 border-gray-700 hover:border-purple-500 hover:shadow-xl hover:shadow-purple-600/10 transform hover:-translate-y-1"
                       }`}
                     >
+                      {/* ... (rest of your card JSX is fine) ... */}
                       <div className="flex flex-col gap-4">
-                        {/* Chapter Info */}
                         <div>
                           <div className="flex items-center gap-4 mb-3">
                             <span
@@ -179,8 +198,6 @@ export default async function LearningChapters() {
                             </div>
                           </div>
                         </div>
-
-                        {/* Progress and Action Button */}
                         <div className="flex flex-col items-center justify-center gap-3">
                           {isCompleted && !isLocked && (
                             <div className="w-full">
