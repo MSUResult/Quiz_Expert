@@ -11,7 +11,8 @@ import {
 // --- Fetch chapters with ABSOLUTE URL ---
 async function getVedicMathChapters() {
   // ✅ FIX: Construct the full URL using the environment variable.
-  const domain = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const domain =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
   const apiUrl = `${domain}/api/getting/chapters/Math`;
 
   // console.log(`[FRONTEND] Fetching chapters from URL: ${apiUrl}`);

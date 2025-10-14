@@ -112,7 +112,7 @@ const Footer = () => {
           {/* Social Icons */}
           <div className="flex gap-4 mt-4">
             <motion.a
-              href="https://github.com/"
+              href="https://github.com/MSUResult"
               target="_blank"
               whileHover={{ scale: 1.3, color: "#34D399" }}
               transition={{ type: "spring", stiffness: 300 }}
@@ -120,12 +120,12 @@ const Footer = () => {
               <FaGithub size={24} />
             </motion.a>
             <motion.a
-              href="https://linkedin.com/"
+              href="https://www.instagram.com/adarshsingh2987/"
               target="_blank"
               whileHover={{ scale: 1.3, color: "#34D399" }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <FaLinkedin size={24} />
+              <FaInstagram size={24} />
             </motion.a>
             <motion.a
               href="https://twitter.com/"
