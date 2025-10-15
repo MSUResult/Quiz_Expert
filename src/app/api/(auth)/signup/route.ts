@@ -12,25 +12,27 @@ export async function POST(req) {
     const firstName = formData.get("firstName");
     const lastName = formData.get("lastName");
     const email = formData.get("email");
-    const phoneNumber = formData.get("phoneNumber"); // ✅ Get phone number
+    const phoneNumber = formData.get("phoneNumber");
     const password = formData.get("password");
     const file = formData.get("profileImage");
 
-    // ✅ VALIDATION: Ensure at least one contact method is provided
-    if (!email && !phoneNumber) {
+    // ✅ VALIDATION: phone number is now required, email optional
+    if (!firstName || !lastName || !phoneNumber || !password) {
       return NextResponse.json(
         {
           success: false,
-          message: "Please provide an email or a phone number.",
+          message:
+            "First name, last name, phone number, and password are required.",
         },
         { status: 400 }
       );
     }
 
-    // ✅ CHECK FOR EXISTING USER by email OR phone
+    // ✅ Check if user already exists (by email or phone)
     const existingUserQuery = [];
     if (email) existingUserQuery.push({ email });
-    if (phoneNumber) existingUserQuery.push({ phoneNumber });
+    // Phone number is always present, so we always check it
+    existingUserQuery.push({ phoneNumber });
 
     const existingUser = await User.findOne({ $or: existingUserQuery });
 
@@ -40,12 +42,17 @@ export async function POST(req) {
           success: false,
           message: "An account with this email or phone number already exists.",
         },
-        { status: 409 } // 409 Conflict
+        { status: 409 } // Conflict
       );
     }
 
+    // ✅ Upload profile image to Cloudinary (if provided)
     let profileImageUrl = null;
-    if (file && typeof file === "object") {
+
+    // ▼▼▼ SOLUTION: Check the file size to prevent empty uploads ▼▼▼
+    if (file && file.size > 0) {
+      // ▲▲▲ This is the only line that was changed.
+
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const uploadRes = await new Promise((resolve, reject) => {
@@ -62,16 +69,17 @@ export async function POST(req) {
       profileImageUrl = uploadRes.secure_url;
     }
 
+    // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Save to MongoDB with the new phoneNumber field
+    // ✅ Save user to MongoDB
     const newUser = await User.create({
       firstName,
       lastName,
-      email: email || null, // Store null if empty
-      phoneNumber: phoneNumber || null, // Store null if empty
+      email: email || null, // store null if no email provided
+      phoneNumber,
       password: hashedPassword,
-      profileImage: profileImageUrl,
+      profileImage: profileImageUrl, // Will use the default from your schema if null
     });
 
     return NextResponse.json(
@@ -83,8 +91,9 @@ export async function POST(req) {
       { status: 201 }
     );
   } catch (err) {
-    console.error("Signup error:", err);
-    // Provide a more specific error for duplicate key errors
+    console.error("🔥 Signup error:", err);
+
+    // Handle duplicate key errors (MongoDB)
     if (err.code === 11000) {
       return NextResponse.json(
         {
@@ -94,8 +103,13 @@ export async function POST(req) {
         { status: 409 }
       );
     }
+
+    // Generic error fallback
     return NextResponse.json(
-      { success: false, message: err.message || "An internal error occurred." },
+      {
+        success: false,
+        message: err.message || "An internal server error occurred.",
+      },
       { status: 500 }
     );
   }

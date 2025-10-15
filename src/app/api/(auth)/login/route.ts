@@ -3,74 +3,75 @@ import Users from "@/models/Users";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-// ✅ Use environment variable for security
-const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey"; // fallback for local dev
+export const dynamic = "force-dynamic"; // This is correct
+
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 export async function POST(req) {
   try {
-    // 1️⃣ Connect to DB
     await dbConnect();
+    const { phoneNumber, password } = await req.json();
 
-    // 2️⃣ Parse JSON body
-    const { email, password } = await req.json();
-
-    // 3️⃣ Find the user and include password for comparison
-    const user = await Users.findOne({ email }).select("+password");
+    const user = await Users.findOne({ phoneNumber }).select("+password");
     if (!user) {
-      return new Response(JSON.stringify({ error: "User not found" }), {
-        status: 404,
-      });
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // 4️⃣ Compare passwords using bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return new Response(JSON.stringify({ error: "Invalid credentials" }), {
-        status: 401,
-      });
+      return NextResponse.json(
+        { message: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
-    // 5️⃣ Create JWT payload and sign token
     const tokenPayload = {
       id: user._id,
-      email: user.email,
+      phoneNumber: user.phoneNumber,
       role: user.role,
     };
 
     const token = jwt.sign(tokenPayload, JWT_SECRET, {
-      expiresIn: "7d", // Token valid for 7 days
+      expiresIn: "7d",
     });
 
-    // 6️⃣ Store token in HttpOnly cookie
-    const cookieStore = cookies();
-    cookieStore.set({
+    cookies().set({
       name: "auth_token",
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // only secure in production
-      sameSite: "strict", // prevent CSRF
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 7 * 24 * 60 * 60,
     });
 
-    // 7️⃣ Return success response
-    return new Response(
-      JSON.stringify({
+    // --- CHANGE: Conditionally build the user response object ---
+    const userResponse = {
+      id: user._id,
+      firstName: user.firstName,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+    };
+
+    if (user.email) {
+      userResponse.email = user.email;
+    }
+    // --- End of Change ---
+
+    return NextResponse.json(
+      {
         message: "Login successful",
-        user: {
-          id: user._id,
-          firstName: user.firstName,
-          email: user.email,
-          role: user.role,
-        },
-      }),
+        user: userResponse, // Send the newly created object
+      },
       { status: 200 }
     );
   } catch (error) {
     console.error("❌ Login error:", error);
-    return new Response(JSON.stringify({ error: "Something went wrong" }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

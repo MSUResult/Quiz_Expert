@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function Signup() {
   const [preview, setPreview] = useState<string | null>(null);
 
+  // ✅ Image Preview Handler (unchanged)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -15,26 +16,11 @@ export default function Signup() {
     }
   };
 
+  // ✅ Simplified submit logic (no email/phone validation here)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
-
-    const email = formData.get("email")?.toString().trim();
-    const phone = formData.get("phoneNumber")?.toString().trim();
-
-    console.log("🧩 Signup form data before sending:", {
-      firstName: formData.get("firstName"),
-      lastName: formData.get("lastName"),
-      email,
-      phoneNumber: phone,
-      password: formData.get("password"),
-    });
-
-    if (!email && !phone) {
-      alert("❌ Please provide either an Email or a Phone Number.");
-      return;
-    }
 
     const imageFile = (
       document.getElementById("imageUpload") as HTMLInputElement
@@ -43,22 +29,18 @@ export default function Signup() {
 
     try {
       console.log("📤 Sending signup data to backend...");
-
       const res = await fetch("/api/signup", {
         method: "POST",
         body: formData,
       });
 
       const result = await res.json();
-
       console.log("✅ Server response:", result);
 
       if (result.success) {
         alert("✅ Account created successfully!");
         form.reset();
         setPreview(null);
-
-        // 🔹 Redirect to login page after successful signup
         window.location.href = "/login";
       } else {
         alert("❌ " + result.message);
@@ -71,7 +53,7 @@ export default function Signup() {
 
   return (
     <main className="flex h-screen w-full bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white overflow-hidden">
-      {/* LEFT SIDE - Animated Design */}
+      {/* LEFT SIDE - Animated Background */}
       <section className="flex-1 relative flex items-center justify-center overflow-hidden hidden md:flex">
         <motion.div
           className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-blue-500 via-purple-600 to-pink-500 blur-3xl opacity-40"
@@ -165,19 +147,21 @@ export default function Signup() {
               />
             </div>
 
-            {/* BOTH FIELDS NOW AVAILABLE */}
+            {/* CHANGED: Email optional */}
             <input
               name="email"
               type="email"
-              placeholder="Email (optional if phone is provided)"
+              placeholder="Email (Optional)"
               className="p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
             />
 
+            {/* CHANGED: Phone number required */}
             <input
               name="phoneNumber"
               type="tel"
-              placeholder="Phone Number (optional if email is provided)"
+              placeholder="Phone Number"
               className="p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
+              required
             />
 
             <input

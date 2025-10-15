@@ -6,16 +6,13 @@ const UserSchema = new Schema(
       type: String,
       required: [true, "First name is required"],
       trim: true,
-      minlength: 2,
-      maxlength: 50,
     },
     lastName: {
       type: String,
       required: [true, "Last name is required"],
       trim: true,
-      minlength: 2,
-      maxlength: 50,
     },
+    // --- CHANGE 1: REMOVED all inline index properties like 'sparse' ---
     email: {
       type: String,
       trim: true,
@@ -24,14 +21,12 @@ const UserSchema = new Schema(
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill a valid email address",
       ],
-      // optional now, not required
     },
     phoneNumber: {
       type: String,
-      required: [true, "Phone number is required"], // make it required
-      unique: true,
+      required: [true, "Phone number is required"],
+      unique: true, // This is correct, phone number must always be unique
       trim: true,
-      sparse: true,
     },
     password: {
       type: String,
@@ -49,6 +44,7 @@ const UserSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    // --- Other fields remain unchanged ---
     quizHistory: [
       {
         chapterId: {
@@ -64,13 +60,14 @@ const UserSchema = new Schema(
     quizzesPlayed: { type: Number, default: 0 },
     bestScore: { type: Number, default: 0 },
     lastPlayed: { type: Date },
-    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
 
-// Remove duplicate email index warning: keep only unique in field
-// UserSchema.index({ email: 1 }, { unique: true }); // removed
+// --- CHANGE 2: DEFINED a proper sparse index for email ---
+// This tells MongoDB: "The email field must be unique, but ONLY for documents that have it."
+// This is the correct way to allow multiple users to have a null/missing email.
+UserSchema.index({ email: 1 }, { unique: true, sparse: true });
 
 const User = models.User || mongoose.model("User", UserSchema);
 export default User;
