@@ -27,8 +27,8 @@ const Navbar = () => {
 
   const navLinks = [
     { text: "Home", href: "/" },
-    { text: "Math", href: "/Math" },
-    { text: "GS", href: "/GS" },
+    { text: "Math", href: "/vedic-math" },
+    { text: "GS", href: "/arithmetic" },
     { text: "About", href: "/About" },
   ];
 
