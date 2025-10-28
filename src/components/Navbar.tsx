@@ -54,7 +54,7 @@ const Navbar = () => {
       className="w-full fixed top-0 left-0 z-50 bg-black/50 backdrop-blur-lg border-b border-white/10 shadow-lg"
     >
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-        {/* Logo - now interactive and links to home */}
+        {/* Logo */}
         <Link href="/" passHref>
           <motion.div
             className="flex items-center gap-3 cursor-pointer"
@@ -106,27 +106,29 @@ const Navbar = () => {
             );
           })}
 
-          {/* User Profile Section */}
+          {/* User Profile Desktop */}
           {user && (
-            <motion.li
-              className="flex items-center gap-2 ml-6"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <span className="text-cyan-300 font-semibold text-lg">
-                {user.firstName}
-              </span>
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-500 shadow-md">
-                <Image
-                  src={user.profileImage || "/default-avatar.png"}
-                  alt="Profile"
-                  width={40}
-                  height={40}
-                  className="object-cover object-top w-full h-full"
-                />
-              </div>
-            </motion.li>
+            <Link href={"/profile"}>
+              <motion.li
+                className="flex items-center gap-2 ml-6"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              >
+                <span className="text-cyan-300 font-semibold text-lg">
+                  {user.firstName}
+                </span>
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-500 shadow-md">
+                  <Image
+                    src={user.profileImage || "/default-avatar.png"}
+                    alt="Profile"
+                    width={40}
+                    height={40}
+                    className="object-cover object-top w-full h-full"
+                  />
+                </div>
+              </motion.li>
+            </Link>
           )}
         </ul>
 
@@ -171,22 +173,29 @@ const Navbar = () => {
               );
             })}
 
-            {/* User Info in Mobile Menu */}
+            {/* User Info in Mobile Menu - now clickable */}
             {user && (
-              <li className="flex flex-col items-center gap-3 pt-6 border-t border-gray-700 w-4/5">
-                <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-purple-500 shadow-lg">
-                  <Image
-                    src={user.profileImage || "/default-avatar.png"}
-                    alt="Profile"
-                    width={64}
-                    height={64}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <span className="text-cyan-300 font-semibold text-xl">
-                  {user.firstName} {user.lastName}
-                </span>
-              </li>
+              <Link href="/profile" onClick={() => setMenuOpen(false)}>
+                <motion.li
+                  className="flex flex-col items-center gap-3 pt-6 border-t border-gray-700 w-4/5 cursor-pointer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-purple-500 shadow-lg">
+                    <Image
+                      src={user.profileImage || "/default-avatar.png"}
+                      alt="Profile"
+                      width={64}
+                      height={64}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <span className="text-cyan-300 font-semibold text-xl">
+                    {user.firstName} {user.lastName}
+                  </span>
+                  <span className="text-gray-400 text-sm">View Profile</span>
+                </motion.li>
+              </Link>
             )}
           </motion.ul>
         )}
