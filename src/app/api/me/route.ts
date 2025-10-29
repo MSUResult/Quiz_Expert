@@ -4,13 +4,12 @@ import dbConnect from "@/lib/db";
 import User from "@/models/Users";
 import { NextResponse } from "next/server";
 
-// Required to avoid static optimization warning
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   await dbConnect();
 
-  // ✅ Await cookies() explicitly
+  // 🍪 Get auth token from cookies
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
 
@@ -18,11 +17,13 @@ export async function GET() {
     return NextResponse.json({ error: "Not logged in" }, { status: 401 });
   }
 
+  // 🔍 Verify token
   const decoded = verifyToken(token);
   if (!decoded) {
     return NextResponse.json({ error: "Invalid token" }, { status: 403 });
   }
 
+  // 🔎 Find user by decoded ID
   const user = await User.findById(decoded.id).select(
     "firstName lastName profileImage email phoneNumber role totalScore quizzesPlayed bestScore lastPlayed"
   );
@@ -31,5 +32,6 @@ export async function GET() {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
+  // ✅ Return user info
   return NextResponse.json({ success: true, user }, { status: 200 });
 }
