@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GiIndianPalace } from "react-icons/gi";
+import Link from "next/link";
 
 const Login = () => {
   const router = useRouter();
@@ -127,6 +128,13 @@ const Login = () => {
             Sign Up
           </a>
         </p>
+
+        <Link
+          href={"/forgetPassword"}
+          className="text-blue-800 hover:text-gray-600 mt-4 "
+        >
+          Forget Pasword
+        </Link>
       </section>
     </main>
   );

@@ -47,8 +47,8 @@ export async function POST(req) {
       name: "auth_token",
       value: token,
       httpOnly: true,
-      secure: isProd, // only true on HTTPS
-      sameSite: isProd ? "strict" : "lax",
+      secure: false, // only true on HTTPS
+      sameSite: "lax", // <--- CHANGE THIS TO "lax"
       path: "/",
       maxAge: 7 * 24 * 60 * 60, // 7 days
     });

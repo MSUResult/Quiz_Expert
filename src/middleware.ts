@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Pages allowed without token
-  const publicPages = ["/Signup", "/login"];
+  const publicPages = ["/Signup", "/login", "/forgetpassword"];
   const isPublicPage = publicPages.some((page) => pathname.startsWith(page));
 
   // Allow API routes without token
@@ -36,5 +36,5 @@ export function middleware(request: NextRequest) {
 
 // Apply middleware to all pages except _next, favicon, api
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api|forgetpassword).*)"],
 };

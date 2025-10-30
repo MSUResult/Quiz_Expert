@@ -1,48 +1,146 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
 export default function Signup() {
   const [preview, setPreview] = useState<string | null>(null);
+  const [otp, setOtp] = useState("");
+  const [showOtpBox, setShowOtpBox] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
 
-  // ✅ Image Preview Handler (unchanged)
+  // ✅ Image Preview Handler
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("📸 Image change triggered");
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPreview(imageUrl);
+      const previewUrl = URL.createObjectURL(file);
+      setPreview(previewUrl);
+      console.log("✅ Preview image set:", previewUrl);
+    } else {
+      console.warn("⚠️ No image selected");
     }
   };
 
-  // ✅ Simplified submit logic (no email/phone validation here)
+  // ✅ Send OTP (calls backend)
+  const handleVerify = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("📞 [handleVerify] Triggered for phone:", phoneNumber);
+
+    if (!phoneNumber) {
+      alert("⚠️ Please enter your phone number first!");
+      console.warn("❌ No phone number entered!");
+      return;
+    }
+
+    const otpCode = Math.floor(1000 + Math.random() * 9000);
+    console.log("🔢 Generated OTP:", otpCode);
+
+    try {
+      console.log("🚀 Sending OTP request to backend...");
+      const res = await fetch("/api/sendOtp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      console.log("📩 Response received from /api/sendOtp");
+      const data = await res.json();
+      console.log("📦 Response data:", data);
+
+      if (data.success) {
+        alert("📩 OTP sent successfully!");
+        setShowOtpBox(true);
+        console.log("✅ OTP box opened for verification");
+      } else {
+        console.error("❌ OTP send failed:", data.message);
+        alert("❌ Failed to send OTP: " + data.message);
+      }
+    } catch (err) {
+      console.error("🔥 Error sending OTP:", err);
+      alert("❌ Error sending OTP");
+    }
+  };
+
+  // ✅ Verify entered OTP
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(
+      "🟢 [handleOtpSubmit] Verifying OTP:",
+      otp,
+      "for phone:",
+      phoneNumber
+    );
+
+    try {
+      const res = await fetch("/api/verifyOtp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber, otp }),
+      });
+
+      console.log("📩 Response received from /api/verifyOtp");
+      const data = await res.json();
+      console.log("📦 OTP verification response:", data);
+
+      if (data.success) {
+        alert("✅ OTP verified successfully!");
+        setIsVerified(true);
+        setShowOtpBox(false);
+        console.log("✅ OTP verified — user marked as verified");
+      } else {
+        console.warn("❌ Invalid OTP entered:", otp);
+        alert("❌ Invalid OTP. Try again!");
+      }
+    } catch (err) {
+      console.error("🔥 Server error verifying OTP:", err);
+      alert("❌ Server error verifying OTP");
+    }
+  };
+
+  // ✅ Signup Submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("📝 [handleSubmit] Signup form submitted");
+
+    if (!isVerified) {
+      console.warn("⚠️ Phone not verified — blocking signup");
+      alert("⚠️ Please verify your phone number first!");
+      return;
+    }
+
     const form = e.currentTarget;
     const formData = new FormData(form);
-
     const imageFile = (
       document.getElementById("imageUpload") as HTMLInputElement
     )?.files?.[0];
-    if (imageFile) formData.append("profileImage", imageFile);
 
+    if (imageFile) {
+      formData.append("profileImage", imageFile);
+      console.log("📸 Attached image to FormData:", imageFile.name);
+    }
+
+    console.log("🚀 Sending signup data to /api/signup...");
     try {
-      console.log("📤 Sending signup data to backend...");
       const res = await fetch("/api/signup", {
         method: "POST",
         body: formData,
       });
 
+      console.log("📩 Response received from /api/signup");
       const result = await res.json();
-      console.log("✅ Server response:", result);
+      console.log("📦 Signup response:", result);
 
       if (result.success) {
         alert("✅ Account created successfully!");
+        console.log("🎉 Signup successful — redirecting to login...");
         form.reset();
         setPreview(null);
         window.location.href = "/login";
       } else {
+        console.error("❌ Signup failed:", result.message);
         alert("❌ " + result.message);
       }
     } catch (error: any) {
@@ -53,8 +151,8 @@ export default function Signup() {
 
   return (
     <main className="flex h-screen w-full bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white overflow-hidden">
-      {/* LEFT SIDE - Animated Background */}
-      <section className="flex-1 relative flex items-center justify-center overflow-hidden hidden md:flex">
+      {/* Left Section */}
+      <section className="hidden md:flex flex-1 items-center justify-center relative overflow-hidden">
         <motion.div
           className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-blue-500 via-purple-600 to-pink-500 blur-3xl opacity-40"
           animate={{ scale: [1, 1.1, 1], rotate: [0, 360] }}
@@ -76,7 +174,7 @@ export default function Signup() {
         </motion.div>
       </section>
 
-      {/* RIGHT SIDE - Signup Form */}
+      {/* Signup Form */}
       <section className="flex-1 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, x: 80 }}
@@ -95,7 +193,7 @@ export default function Signup() {
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* IMAGE UPLOAD */}
+            {/* Image Upload */}
             <div className="flex flex-col items-center gap-3">
               <div className="relative w-24 h-24">
                 {preview ? (
@@ -124,30 +222,27 @@ export default function Signup() {
                   className="hidden"
                 />
               </div>
-              <p className="text-gray-400 text-sm">
-                Upload your profile picture
-              </p>
             </div>
 
-            {/* INPUT FIELDS */}
-            <div className="flex gap-3 w-full flex-wrap">
+            {/* Name Inputs */}
+            <div className="flex gap-3">
               <input
                 name="firstName"
                 type="text"
                 placeholder="First name"
-                className="flex-1 min-w-[48%] p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
+                className="flex-1 p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
                 required
               />
               <input
                 name="lastName"
                 type="text"
                 placeholder="Last name"
-                className="flex-1 min-w-[48%] p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
+                className="flex-1 p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
                 required
               />
             </div>
 
-            {/* CHANGED: Email optional */}
+            {/* Email */}
             <input
               name="email"
               type="email"
@@ -155,15 +250,30 @@ export default function Signup() {
               className="p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
             />
 
-            {/* CHANGED: Phone number required */}
-            <input
-              name="phoneNumber"
-              type="tel"
-              placeholder="Phone Number"
-              className="p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
-              required
-            />
+            {/* Phone + Verify */}
+            <div className="flex gap-2 items-center">
+              <input
+                name="phoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                  console.log("📞 Phone input changed:", e.target.value);
+                }}
+                placeholder="Phone Number"
+                className="flex-1 p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
+                required
+              />
+              <button
+                onClick={handleVerify}
+                type="button"
+                className="px-3 py-2 border border-blue-400 rounded-lg text-blue-400 hover:bg-blue-500 hover:text-white transition-all"
+              >
+                {isVerified ? "✅ Verified" : "Verify"}
+              </button>
+            </div>
 
+            {/* Password */}
             <input
               name="password"
               type="password"
@@ -172,17 +282,73 @@ export default function Signup() {
               required
             />
 
+            {/* Submit Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               type="submit"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold p-3 rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/20"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold p-3 rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/20"
             >
               Create Account
             </motion.button>
           </form>
         </motion.div>
       </section>
+
+      {/* OTP Modal */}
+      <AnimatePresence>
+        {showOtpBox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-[#1e293b] p-6 rounded-2xl shadow-lg border border-white/20 w-[90%] max-w-sm text-center"
+            >
+              <h2 className="text-xl font-semibold mb-3 text-blue-400">
+                Enter OTP Code
+              </h2>
+              <form onSubmit={handleOtpSubmit} className="flex flex-col gap-4">
+                <input
+                  type="text"
+                  maxLength={4}
+                  value={otp}
+                  onChange={(e) => {
+                    setOtp(e.target.value);
+                    console.log("⌨️ OTP input changed:", e.target.value);
+                  }}
+                  className="text-center text-lg tracking-widest p-3 rounded-lg bg-[#2e2e2e] focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="____"
+                  required
+                />
+                <div className="flex gap-2 justify-center">
+                  <button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium"
+                  >
+                    Verify OTP
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowOtpBox(false);
+                      console.log("❌ OTP modal closed manually");
+                    }}
+                    className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg font-medium"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
