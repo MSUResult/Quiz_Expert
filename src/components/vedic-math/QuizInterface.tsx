@@ -1,33 +1,100 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 import { FiClock, FiCheckCircle } from "react-icons/fi";
 
 export default function QuizInterface({ chapter }) {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(chapter.timeEstimate * 60);
   const [isQuizFinished, setIsQuizFinished] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const questions = chapter.questions;
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
 
-  // Timer effect
+  // ✅ Request fullscreen when quiz starts
   useEffect(() => {
-    // Stop the timer if the quiz is finished or time is up
-    if (timeLeft <= 0 || isQuizFinished) {
-      if (timeLeft <= 0 && !isQuizFinished) {
-        // Automatically submit if time runs out
+    const requestFullScreen = async () => {
+      const el = document.documentElement;
+      try {
+        // ✅ Only request fullscreen if not already in fullscreen
+        if (!document.fullscreenElement && el.requestFullscreen) {
+          await el.requestFullscreen();
+          setIsFullscreen(true);
+        }
+      } catch (err) {
+        console.warn("Fullscreen request failed:", err);
+      }
+    };
+
+    requestFullScreen();
+
+    // ✅ Disable right-click
+    const disableRightClick = (e) => e.preventDefault();
+    document.addEventListener("contextmenu", disableRightClick);
+
+    // ✅ Prevent dangerous keyboard shortcuts
+    const blockKeys = (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && ["r", "R", "w", "W"].includes(e.key))
+      ) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("keydown", blockKeys);
+
+    return () => {
+      document.removeEventListener("contextmenu", disableRightClick);
+      window.removeEventListener("keydown", blockKeys);
+    };
+  }, []);
+
+  // ✅ Detect if user switches tab or leaves fullscreen
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && !isQuizFinished) {
+        alert("You switched tabs! Quiz will be submitted automatically.");
         handleSubmit();
       }
+    };
+
+    const handleFocusLoss = () => {
+      if (!document.hasFocus() && !isQuizFinished) {
+        alert("You left the quiz window! Quiz submitted.");
+        handleSubmit();
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && !isQuizFinished) {
+        alert("You exited fullscreen! Quiz will be submitted.");
+        handleSubmit();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleFocusLoss);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleFocusLoss);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [isQuizFinished]);
+
+  // ✅ Timer logic
+  useEffect(() => {
+    if (timeLeft <= 0 || isQuizFinished) {
+      if (timeLeft <= 0 && !isQuizFinished) handleSubmit();
       return;
     }
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft, isQuizFinished]);
 
@@ -39,15 +106,24 @@ export default function QuizInterface({ chapter }) {
   };
 
   const goToQuestion = (index) => {
-    if (index >= 0 && index < totalQuestions) {
-      setCurrentQuestionIndex(index);
-    }
+    if (index >= 0 && index < totalQuestions) setCurrentQuestionIndex(index);
   };
 
   const handleSubmit = () => {
-    setIsQuizFinished(true); // Stop the timer and UI updates
+    setIsQuizFinished(true);
 
-    // Create a results object to store in localStorage
+    // ✅ Safely exit fullscreen (only if document is active)
+    try {
+      if (
+        document.fullscreenElement &&
+        document.visibilityState === "visible"
+      ) {
+        document.exitFullscreen();
+      }
+    } catch (err) {
+      console.warn("Fullscreen exit failed:", err);
+    }
+
     const resultsToStore = {
       chapterId: chapter._id,
       chapterTitle: chapter.title,
@@ -55,10 +131,7 @@ export default function QuizInterface({ chapter }) {
       totalQuestions: totalQuestions,
     };
 
-    // Use localStorage to pass data to the results page
     localStorage.setItem("quizResults", JSON.stringify(resultsToStore));
-
-    // Redirect to the results page
     router.push(`/vedic-math/results/${chapter._id}`);
   };
 
@@ -68,7 +141,6 @@ export default function QuizInterface({ chapter }) {
   return (
     <div className="min-h-screen bg-[#111827] flex justify-center py-12 px-4">
       <div className="w-full max-w-4xl bg-[#1F2937] text-white rounded-2xl shadow-2xl p-6 md:p-8 border border-gray-700">
-        {/* ... Header and Question Body remain the same ... */}
         {/* Header */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
@@ -93,6 +165,7 @@ export default function QuizInterface({ chapter }) {
             ></div>
           </div>
         </div>
+
         {/* Question Body */}
         <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
           <h2 className="text-lg font-semibold leading-relaxed mb-6">
@@ -102,9 +175,7 @@ export default function QuizInterface({ chapter }) {
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
-                /* ... existing button code ... */ onClick={() =>
-                  handleSelectOption(option)
-                }
+                onClick={() => handleSelectOption(option)}
                 className={`w-full text-left p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-4 ${
                   answers[currentQuestionIndex] === option
                     ? "bg-purple-500/20 border-purple-500"
@@ -138,7 +209,6 @@ export default function QuizInterface({ chapter }) {
             Previous
           </button>
           {currentQuestionIndex === totalQuestions - 1 ? (
-            // Show Submit button on the last question
             <button
               onClick={handleSubmit}
               disabled={!allQuestionsAnswered}
@@ -149,8 +219,7 @@ export default function QuizInterface({ chapter }) {
           ) : (
             <button
               onClick={() => goToQuestion(currentQuestionIndex + 1)}
-              disabled={currentQuestionIndex === totalQuestions - 1}
-              className="px-8 py-2 font-semibold rounded-md bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-8 py-2 font-semibold rounded-md bg-purple-600 hover:bg-purple-700 transition-colors"
             >
               Next
             </button>
