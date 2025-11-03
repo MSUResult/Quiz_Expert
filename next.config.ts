@@ -2,29 +2,42 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // ▼▼▼ FIX: Removed the deprecated `domains` property ▼▼▼
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        pathname: "/**", // Use /** for any path
+        pathname: "/**",
       },
-      // ✅ Added the unsplash.com domain here to fully migrate
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        pathname: "/**", // Use /** for any path
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.tribuneindia.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.newsdata.io",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.indiatimes.com",
+        pathname: "/**",
+      },
+      // 🧩 Add this one 👇
+      {
+        protocol: "https",
+        hostname: "imgeng.jagran.com",
+        pathname: "/**",
       },
     ],
-    // ▲▲▲
   },
-  // ✅ Disable type checking during build
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
 };
 
 export default nextConfig;
