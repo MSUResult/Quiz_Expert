@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper"; // Import the client component wrapper
+import UserProvider from "@/context/userProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +30,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/*
+        <UserProvider>
+          {/*
           Use the LayoutWrapper here. It will handle showing/hiding the navbar
           and rendering the children inside its <main> tag.
         */}
-        <LayoutWrapper>{children}</LayoutWrapper>
+          <LayoutWrapper>{children}</LayoutWrapper>
+        </UserProvider>
       </body>
     </html>
   );

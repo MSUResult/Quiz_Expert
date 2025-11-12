@@ -27,9 +27,9 @@ const LearningPath = () => {
       glow: "shadow-indigo-500/50",
     },
     {
-      title: "Arithmetic Mastery",
+      title: "General studies",
       slug: "arithmetic", // Added slug for routing
-      desc: "Sharpen your basic arithmetic skills with logic and fun.",
+      desc: "Sharpen your basic G.S skills with logic and fun.",
       IconComponent: GiBrain,
       chapters: 10,
       questions: 180,

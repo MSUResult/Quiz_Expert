@@ -1,5 +1,12 @@
 import mongoose, { Schema, models } from "mongoose";
 
+const BattleSchema = new Schema({
+  opponentId: { type: Schema.Types.ObjectId, ref: "User" },
+  score: { type: Number, default: 0 },
+  result: { type: String, enum: ["win", "lose", "draw"], default: "draw" },
+  date: { type: Date, default: Date.now },
+});
+
 const UserSchema = new Schema(
   {
     firstName: {
@@ -12,6 +19,12 @@ const UserSchema = new Schema(
       required: [true, "Last name is required"],
       trim: true,
     },
+
+    isCurrent: {
+      type: String,
+      enum: ["online", "offline"],
+    },
+
     // --- CHANGE 1: REMOVED all inline index properties like 'sparse' ---
     email: {
       type: String,
@@ -56,6 +69,8 @@ const UserSchema = new Schema(
         date: { type: Date, default: Date.now },
       },
     ],
+    battleHistory: [BattleSchema], // 🆕 New battle-specific history
+    totalBattleScore: { type: Number, default: 0 }, // 🆕 Total battle points
     totalScore: { type: Number, default: 0 },
     quizzesPlayed: { type: Number, default: 0 },
     bestScore: { type: Number, default: 0 },

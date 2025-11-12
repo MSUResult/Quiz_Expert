@@ -18,7 +18,7 @@ export default function LayoutWrapper({
   );
 
   // Routes where Footer should NOT appear
-  const hiddenFooterRoutes = ["/admin", "/login"];
+  const hiddenFooterRoutes = ["/admin", "/login", "leaderboard", "battle"];
   const shouldHideFooter = hiddenFooterRoutes.some((route) =>
     pathname.startsWith(route)
   );

@@ -33,5 +33,8 @@ export async function GET() {
   }
 
   // ✅ Return user info
-  return NextResponse.json({ success: true, user }, { status: 200 });
+  return NextResponse.json(
+    { success: true, user, userId: decoded.id },
+    { status: 200 }
+  );
 }

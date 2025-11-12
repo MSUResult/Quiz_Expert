@@ -1,43 +1,33 @@
+// /app/api/GetNews/route.ts
 import { NextResponse } from "next/server";
 
-export const revalidate = 28800; // 8 hours cache
+let cachedNews: any = null;
+let lastFetched = 0;
+const CACHE_DURATION = 8 * 60 * 60 * 1000; // 8 hours in ms
 
 export async function GET() {
+  const now = Date.now();
+
+  if (cachedNews && now - lastFetched < CACHE_DURATION) {
+    console.log("🧠 Using cached news");
+    return NextResponse.json(cachedNews);
+  }
+
+  console.log("🌐 Fetching fresh news...");
   const API_KEY = process.env.NEWSAPI;
   const url = `https://newsdata.io/api/1/news?apikey=${API_KEY}&country=in&category=politics,education&language=en&q=ssc`;
 
-  console.log("🔍 Fetching news from:", url);
-  console.log("🧩 API Key available?", !!API_KEY);
-
   try {
-    const res = await fetch(url, {
-      next: { revalidate: 28800 }, // ISR revalidation
-    });
-
-    console.log("📡 Response status:", res.status);
-
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("❌ Response not OK:", text);
-      return NextResponse.json(
-        { error: "Failed to fetch from NewsData API", status: res.status },
-        { status: res.status }
-      );
-    }
-
+    const res = await fetch(url);
     const data = await res.json();
-    console.log(
-      "✅ Successfully fetched news:",
-      data?.results?.length || 0,
-      "articles"
-    );
 
+    cachedNews = data;
+    lastFetched = now;
+
+    console.log("✅ News updated in cache");
     return NextResponse.json(data);
-  } catch (error) {
-    console.error("🚨 Fetch failed:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch news", details: (error as Error).message },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    console.error("❌ Error fetching news:", err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
